@@ -92,3 +92,55 @@ Now we can run our image by using terminal or cli
 This method reduces our effort to create containers and write lengthy commands 
 
 
+Multiple Containers-
+
+1. create docker-compose.yml file where we define our docker configuration
+2. Like this: version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - 8091:8091
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://docker-mysql:3306/dockerdemo
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: nittan
+    networks:
+      - my-network
+    depends_on:
+      - docker-mysql
+
+  docker-mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=nittan
+      - MYSQL_DATABASE=dockerdemo
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=nittan
+#      DATABASE_PORT: 3306
+#      MYSQL_USER: root
+#      MYSQL_PASSWORD: nittan
+#      MYSQL_DATABASE: dockerdemo
+#      MYSQL_ROOT_PASSWORD: nittan
+    ports:
+      - 3307:3306
+    networks:
+      - my-network
+    volumes:
+      - mysql-s-data:/var/lib/mysql
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  mysql-s-data:
+
+3. go to maven option and click or run command and then run command "mvn clean package" 
+4. it will provide you a clean package and then go to the terminal and run docker-compose up --build to build the project and run it. 
+5. it will create containers and run for you and also the images. 
+6. if we got a error and we've resolved it then before building again we run command "docker-compose down" to stop previous actions
+7. to check problems: $docker-compose logs -f, $docker network inspect bridge (to check network) , $docker network connect "networkName" "appName"
+8. $docker-compose up -d -> to start the containers
+
